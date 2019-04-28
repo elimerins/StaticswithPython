@@ -1,0 +1,3 @@
+([('table',
+   '/Users/joyeongmin/Documents/2019/statics/pyqt5tutorial/dist/table',
+   'EXECUTABLE')],)

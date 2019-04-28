@@ -1,0 +1,3 @@
+([('grid',
+   '/Users/joyeongmin/Documents/2019/statics/pyqt5tutorial/dist/grid',
+   'EXECUTABLE')],)
