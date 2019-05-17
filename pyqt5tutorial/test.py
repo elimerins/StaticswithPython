@@ -1,7 +1,6 @@
 import numpy as np
 import math
 from math import exp
-from sympy import *
 from scipy.integrate import quad
 import operator as op
 from functools import reduce
