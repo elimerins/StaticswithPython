@@ -309,59 +309,9 @@ def Cal_g_value(testarr):
             print("sum : "+str(sum))
     sum=2*sum
     print("g^2 : "+str(sum))
-    #ksquare=(1/math.gamma(r/2)*pow(2,r))*pow(sum,r-1)*exp(-sum/2)
-    #print("Ksquare(X^2) : "+str(ksquare))
-    """
-    r=10
-    sum=15.99
-    """
     def f(Symbolx) :
         return 1/(math.gamma(r/2)*(2**(r/2)))*(Symbolx**((r/2)-1))*exp(-Symbolx/2)
 
     F,err= quad( f, sum, np.inf )
     print("p_value : "+str(F))
-    return round(F,4)
-def Cal_g_value(testarr):
-    testnp=np.array(testarr)
-    r=(np.size(testnp,1)-1)*(np.size(testnp,0)-1)
-
-    n=np.sum(testnp[:,:])
-    print(n)#sum of all elements in matrix
-    sum=0
-    N1t = np.sum(testnp[0, :], axis=0)
-    N2t = np.sum(testnp[1, :], axis=0)
-    Nt1 = np.sum(testnp[:, 0], axis=0)
-    Nt2 = np.sum(testnp[:, 1], axis=0)
-
-    print(ncr(N1t,int(testnp[0,0]))*ncr(N2t,Nt1-int(testnp[0,0]))/ncr(n,Nt1))
-    """
-    for i in range(len(testarr)):
-        for j in range(len(testarr[0])):
-            Nit=np.sum(testnp[i,:],axis=0)
-            print("Nit : "+str(Nit))
-            Ntj=np.sum(testnp[:,j],axis=0)
-            print("Ntj : "+str(Ntj))
-            Mij=Nit*Ntj/n
-            print("Mij : "+str(testnp[i,j]))
-            print("testarr[I,J] : "+str(testnp[i,j]))
-            element=testnp[i,j]*math.log(testnp[i,j]/Mij)
-            print(element)
-            sum=sum+element
-            print("sum : "+str(sum))
-    sum=2*sum
-    
-    print("g^2 : "+str(sum))
-    #ksquare=(1/math.gamma(r/2)*pow(2,r))*pow(sum,r-1)*exp(-sum/2)
-    #print("Ksquare(X^2) : "+str(ksquare))
-    
-    
-    def f(Symbolx) :
-        return 1/(math.gamma(r/2)*(2**(r/2)))*(Symbolx**((r/2)-1))*exp(-Symbolx/2)
-
-    F,err= quad( f, sum, np.inf )
-    print("p_value : "+str(F))
-    """
-
-    #return round(F,4)
-#print(round(F, 4))
-#print(np.size(testnp,1))#counts of columns
+    return round(sum,4),round(F,4)

@@ -240,6 +240,13 @@ class App(QWidget):
         np_matrix=np.array(matrix)
         print("Min : " + str(np.min(np_matrix)))
         # Message=self.tableWidget.item(0,1).text()
+        if self.combo.currentIndex()==3:
+            if self.lineEdit.text() is not "":
+                alpha=float(self.lineEdit.text())
+            else:
+                alpha =0.05
+        else:
+            alpha=float(self.combo.currentText())
         if (self.vcombo.currentIndex()==1):
 
             if np.min(np_matrix)==0.0:
@@ -247,7 +254,6 @@ class App(QWidget):
                     for j in range(allColumns):
                         matrix[i][j]+=0.5
             p_value = test.Cal_x_value(matrix)
-            alpha = float(self.combo.currentText())
 
             Message="Test type : "+self.vcombo.currentText()+"\n"+\
                     "p-value : "+str(p_value)+"\n"+\
@@ -261,10 +267,10 @@ class App(QWidget):
                         "Note : The test might not be appropriate " \
                         "due to the small expected frequency."
         elif (self.vcombo.currentIndex()==2):
-            p_value = test.Cal_g_value(matrix)
-            alpha = float(self.combo.currentText())
+            G,p_value = test.Cal_g_value(matrix)
 
             Message="Test type : "+self.vcombo.currentText()+"\n"+\
+                    "g : "+str(G)+"\n"+\
                     "p-value : "+str(p_value)+"\n"+\
                     "alpha : " +str(alpha)+"\n"
             if (p_value < alpha):
@@ -273,27 +279,17 @@ class App(QWidget):
                 Message += "X and Y are independent"
             if np.min(np_matrix)<5:
                 Message+="\n\n"+\
-                        "Note : The test might not be  appropriate" \
+                        "Note : The test might not be  appropriate " \
                         "due to the small expected frequency."
         elif (self.cp_combo.currentIndex()==1):
-            if self.lineEdit.text() is not "":
-                print(type(self.lineEdit.text()))
-                print(self.lineEdit.text())
-            else:
-                alpha = float(self.combo.currentText())
             print(alpha)
             pi1,pi2,plus,minus,text=test.Cal_D_value(matrix,alpha)
             Message = "2-sample test for equality of proportions" + "\n" + \
-                      "D : " + str(round(pi1,4))+"-"+str(round(pi2,4))+"="+str(round(pi1-pi2),4)+ "\n" \
+                      "D : " + str(round(pi1,4))+"-"+str(round(pi2,4))+"="+str(round(pi1-pi2,4))+ "\n" \
                     "100 *(1-"+str(alpha)+")% confidence interval for D :"+"\n"\
                     "("+str(round(minus,4))+","+str(round(plus,4))+")"+"\n" +\
                     text
         elif (self.cp_combo.currentIndex()==2):
-            if self.lineEdit.text() is not "":
-                print(type(self.lineEdit.text()))
-                print(self.lineEdit.text())
-            else:
-                alpha = float(self.combo.currentText())
             RR,logminus,logplus,minus,plus=test.Cal_RR_value(matrix,alpha)
             Message = "Relative risk(RR) : " +str(round(RR,4)) +"\n" + \
                       "100 *(1-" + str(alpha) + ")% confidence interval for log RR :\n" \
@@ -302,11 +298,6 @@ class App(QWidget):
                     "("+str(round(minus,4))+","+str(round(plus,4))+")"+"\n" +\
                     "Subjects in the first row are "+str(RR)+" times higher to have success than those in the second row."
         elif (self.cp_combo.currentIndex()==3):
-            if self.lineEdit.text() is not "":
-                print(type(self.lineEdit.text()))
-                print(self.lineEdit.text())
-            else:
-                alpha = float(self.combo.currentText())
             OR,logminus,logplus,minus,plus=test.Cal_OR_value(matrix,alpha)
             print(round(OR,4))
             Message = "Odds ratio(OR) : " +str(round(OR,4)) +"\n" + \
@@ -317,7 +308,6 @@ class App(QWidget):
                     "The odds for success is "+str(round(OR, 4))+" times higher in the first row than the second row."
         elif (self.vcombo.currentIndex() == 3):
             N11,greater,less = test.greater_less(matrix)
-            alpha=float(self.combo.currentText())
 
             Message = "Test type : " + self.vcombo.currentText() + "\n" \
                     "P(n11) : " + str(round(N11,4))+"\n"\
@@ -338,12 +328,6 @@ class App(QWidget):
                     #self.tableWidget.setRowHeight(self,)
             self.tableWidget.resizeRowsToContents()
         elif(self.vcombo.currentIndex()==5):
-
-            if self.lineEdit.text() is not "":
-                print(type(self.lineEdit.text()))
-                print(self.lineEdit.text())
-            else:
-                alpha = float(self.combo.currentText())
             sqrtM, rho,alpha= test.cmh_test(matrix, alpha)
             if alpha>sqrtM:
                 print(alpha,sqrtM)
