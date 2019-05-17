@@ -5,23 +5,44 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import *
 
-
-class App(QWidget):
-
-
+class specify_RowAndColumn(QWidget):
     def __init__(self):
         super().__init__()
-        self.title = 'PyQt5 table - pythonspot.com'
-        self.left = 0
-        self.top = 0
-        self.width = 0
+        self.title = 'Making table'
+        self.left = 400
+        self.top = 300
+        self.width =300
         self.height = 200
         self.initUI()
-
     def initUI(self):
         self.setWindowTitle(self.title)
+        self.layout = QHBoxLayout()
+        self.table_row=QLineEdit()
+        self.table_row.setPlaceholderText('rowCount')
+        self.table_column = QLineEdit()
+        self.table_column.setPlaceholderText('columnCount')
+        self.sendbtn = QPushButton("Send",self)
+        self.layout.addWidget(self.table_row)
+        self.layout.addWidget(self.table_column)
+        self.layout.addWidget(self.sendbtn)
+        self.setLayout(self.layout)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.show()
 
-        self.createTable()#tablewidget create
+class App(QWidget):
+    def __init__(self,r,c):
+        super().__init__()
+        self.title = 'Statistics Test'
+        self.left = 100
+        self.top = 100
+        self.width = 0
+        self.height = 200
+        self.initUI(r,c)
+
+    def initUI(self,r,c):
+        self.setWindowTitle(self.title)
+        self.tableWidget = QTableWidget()
+        self.createTable(r,c)#tablewidget create
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.tableWidget)#add tableWidget
@@ -175,11 +196,10 @@ class App(QWidget):
         else:
             self.lineEdit.hide()
 
-    def createTable(self):
+    def createTable(self,r,c):
        # Create table
-        self.tableWidget = QTableWidget()
-        self.tableWidget.setRowCount(3)
-        self.tableWidget.setColumnCount(3)
+        self.tableWidget.setRowCount(int(r))
+        self.tableWidget.setColumnCount(int(c))
         Rowcount=self.tableWidget.rowCount()
         Colcount = self.tableWidget.columnCount()
         print(self.tableWidget.height())
@@ -196,6 +216,7 @@ class App(QWidget):
 
         # table selection change
         self.tableWidget.doubleClicked.connect(self.on_click)
+
 
     @pyqtSlot()
     def on_click(self):
@@ -350,8 +371,21 @@ class App(QWidget):
     def make_on_click(self):
         return True
 
+class Controller:
+    def __init__(self):
+        pass
+    def Show_FirstWindow(self):
+        self.ui=specify_RowAndColumn()
+        self.ui.sendbtn.clicked.connect(self.Show_SecondWindow)
+    def Show_SecondWindow(self):
+        row=self.ui.table_row.text()
+        column=self.ui.table_column.text()
+        self.ui2=App(row,column)
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = App()
+    Controller=Controller()
+    Controller.Show_FirstWindow()
 
     sys.exit(app.exec_())  
