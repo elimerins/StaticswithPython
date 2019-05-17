@@ -68,8 +68,8 @@ class App(QWidget):
         self.layout2.addWidget(self.textLabel2)
 
         self.combo = QComboBox()
-        self.combo.addItem("0.1")
         self.combo.addItem("0.05")
+        self.combo.addItem("0.1")
         self.combo.addItem("0.01")
         self.combo.addItem("직접입력")
         self.combo.currentIndexChanged.connect(self.combo_on_select)
@@ -97,7 +97,7 @@ class App(QWidget):
         self.cp_combo.addItem("CHOICE")
         self.cp_combo.addItem("Difference in proportions(D)")
         self.cp_combo.addItem("Relative Risk (RR)")
-        self.cp_combo.addItem("Odd Ratio (OR)")
+        self.cp_combo.addItem("Odds Ratio (OR)")
         self.layout2.addWidget(self.cp_combo)
 
         self.layout4=QHBoxLayout()
@@ -309,7 +309,7 @@ class App(QWidget):
                 alpha = float(self.combo.currentText())
             OR,logminus,logplus,minus,plus=test.Cal_OR_value(matrix,alpha)
             print(round(OR,4))
-            Message = "Odds ratio(OR) : " +str(round(OR),4) +"\n" + \
+            Message = "Odds ratio(OR) : " +str(round(OR,4)) +"\n" + \
                       "100 *(1-" + str(alpha) + ")% confidence interval for log OR :\n" \
                     "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
                     "100 *(1-"+str(alpha)+")% confidence interval for OR :"+"\n"\

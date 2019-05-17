@@ -95,7 +95,7 @@ def Residuals(testarr):
             elif 1.959963984540054<=rij and rij<2.5758293035489004:
                 pm_matrix[i][j]="++"
             elif 1.6448536269514722<=rij and rij<1.959963984540054:
-                pm_matrix[i][j]="++"
+                pm_matrix[i][j]="+"
             elif rij<=-2.5758293035489004:
                 pm_matrix[i][j]="---"
             elif -1.959963984540054>=rij and rij > -2.5758293035489004:
