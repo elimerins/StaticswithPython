@@ -258,7 +258,7 @@ class App(QWidget):
                 Message += "X and Y are independent"
             if np.min(np_matrix)<5:
                 Message+="\n\n"+\
-                        "Note : The test might not be  appropriate" \
+                        "Note : The test might not be appropriate " \
                         "due to the small expected frequency."
         elif (self.vcombo.currentIndex()==2):
             p_value = test.Cal_g_value(matrix)
@@ -320,14 +320,14 @@ class App(QWidget):
             alpha=float(self.combo.currentText())
 
             Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "P(n11) " + str(round(N11,4))+"\n"\
+                    "P(n11) : " + str(round(N11,4))+"\n"\
                     "alpha : " + str(alpha) + "\n"
             if greater > alpha or less > alpha:
                 Message += "there is no correlation"
             elif greater < alpha:
-                Message += "there is positive correlation"
+                Message += "x and y are associated"
             elif less < alpha:
-                Message += "there is negative correlation"
+                Message += "x and y are not associated"
 
         elif(self.vcombo.currentIndex()==4):
             Message="check your table"
