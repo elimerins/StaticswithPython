@@ -83,6 +83,7 @@ class App(QWidget):
         self.layout2.addWidget(self.textLabel3)
 
         self.gl_combo = QComboBox()
+        self.gl_combo.addItem("Equal")
         self.gl_combo.addItem("Greater")
         self.gl_combo.addItem("Less")
         self.layout2.addWidget(self.gl_combo)
@@ -184,7 +185,7 @@ class App(QWidget):
                                          "i.e. subjects in the ith row are less likely to be in the jth column")
     @pyqtSlot()
     def vcombo_on_select(self):
-        if self.vcombo.currentIndex() == 4:
+        if self.vcombo.currentIndex() == 3:
             self.gl_combo.show()
         else:
             self.gl_combo.hide()
@@ -253,9 +254,10 @@ class App(QWidget):
                 for i in range(allRows):
                     for j in range(allColumns):
                         matrix[i][j]+=0.5
-            p_value = test.Cal_x_value(matrix)
+            ksquare,p_value = test.Cal_x_value(matrix)
 
             Message="Test type : "+self.vcombo.currentText()+"\n"+\
+                    "X^2 : "+ksquare+"\n"+\
                     "p-value : "+str(p_value)+"\n"+\
                     "alpha : " +str(alpha)+"\n"
             if (p_value < alpha):
@@ -270,7 +272,7 @@ class App(QWidget):
             G,p_value = test.Cal_g_value(matrix)
 
             Message="Test type : "+self.vcombo.currentText()+"\n"+\
-                    "g : "+str(G)+"\n"+\
+                    "G^2 : "+str(G)+"\n"+\
                     "p-value : "+str(p_value)+"\n"+\
                     "alpha : " +str(alpha)+"\n"
             if (p_value < alpha):
@@ -307,17 +309,33 @@ class App(QWidget):
                     "("+str(round(minus,4))+","+str(round(plus,4))+")"+"\n" +\
                     "The odds for success is "+str(round(OR, 4))+" times higher in the first row than the second row."
         elif (self.vcombo.currentIndex() == 3):
-            N11,greater,less = test.greater_less(matrix)
+            greater,less,p_value = test.greater_less(matrix)
 
-            Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "P(n11) : " + str(round(N11,4))+"\n"\
+            if (self.gl_combo.currentIndex()==0):
+                Message = "Test type : " + self.vcombo.currentText() + "\n" \
+                    "P(n11)-two sided : " + str(round(p_value,4))+"\n" \
                     "alpha : " + str(alpha) + "\n"
-            if greater > alpha or less > alpha:
-                Message += "there is no correlation"
-            elif greater < alpha:
-                Message += "x and y are associated"
-            elif less < alpha:
-                Message += "x and y are not associated"
+                if p_value < alpha:
+                    Message += "X and Y are not independent"
+                elif p_value > alpha:
+                    Message += "X and Y are independent"
+            elif (self.gl_combo.currentIndex()==1):
+                Message = "Test type : " + self.vcombo.currentText() + "\n" \
+                    "P(n11)-greater : " + str(round(greater, 4)) + "\n" \
+                    "alpha : " + str(alpha) + "\n"
+                if greater < alpha:
+                    Message += "True odds ratio is greater than 1."
+                elif greater > alpha or less > alpha or p_value > alpha:
+                    Message += "X and Y are independent"
+            elif (self.gl_combo.currentIndex()==2):
+                Message = "Test type : " + self.vcombo.currentText() + "\n" \
+                    "P(n11)-less : " + str(round(less, 4)) + "\n" \
+                    "alpha : " + str(alpha) + "\n"
+                if less < alpha:
+                    Message += "True odds ratio is less than 1."
+                elif less > alpha:
+                    Message += "X and Y are independent"
+
 
         elif(self.vcombo.currentIndex()==4):
             Message="check your table"
@@ -334,7 +352,7 @@ class App(QWidget):
                 print(">")
                 Message = "CMH statistic M : " + str(round(sqrtM**2,4)) + "\n" \
                         "(sqrt M : " + str(round(sqrtM,4)) + ")\n" \
-                        "(rho.hat : " + str(round(rho, 4)) + ")\n" \
+                        "(sample correlation : " + str(round(rho, 4)) + ")\n" \
                         "alpha : " +self.combo.currentText() + "\n"+\
                           "X and Y are not correlated.\n"
             elif alpha<sqrtM:

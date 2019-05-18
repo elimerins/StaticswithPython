@@ -3,21 +3,17 @@ import math
 from math import exp
 from scipy.integrate import quad
 from scipy import stats
+from decimal import Decimal
 import operator as op
 from functools import reduce
 
-def mfactorial(n, _factcache={}):
-  if n not in _factcache:
-    _factcache[n] = math.factorial(n)
-  return _factcache[n]
 def ncr(n, r):
-    r = min(r, n-r)
-    #numer = reduce(op.mul, range(n, n-r, -1), 1)
-    #denom = reduce(op.mul, range(1, r+1), 1)
-    nF=mfactorial(n)
-    rF=mfactorial(r)
-    nr=mfactorial(n-r)
-    return nF//rF*nr
+    numer=1
+    denom=1
+    for i in range(1,int(r)+1):
+        denom*=i
+        numer*=n+1-i
+    return Decimal(numer/denom)
 
 print(stats.norm.ppf(1-0.1/2))
 print(stats.norm.ppf(1-0.05/2))
@@ -105,7 +101,13 @@ def Residuals(testarr):
             matrix[i][j]=round(rij,4)
     return matrix,pm_matrix
 def greater_less(testarr):
-    testnp = np.array(testarr)
+    odds, pvalue = stats.fisher_exact(testarr)
+    odds,lpvalue=stats.fisher_exact(testarr,'less')
+    print(odds,lpvalue)
+    odds, gpvalue = stats.fisher_exact(testarr, 'greater')
+    print(odds, gpvalue)
+    """
+    testnp = np.array(testarr,dtype=np.float64)
     n = np.sum(testnp[:, :])
     print(n)  # sum of all elements in matrix
     min_val=max(0,np.sum(testnp[0, :], axis=0)+np.sum(testnp[:, 0], axis=0)-n)
@@ -131,43 +133,22 @@ def greater_less(testarr):
     alpha=0.05
     greater=0
     less=0
-    """
-    for i in range(min_val,max_val+1):
-        N1t = np.sum(testnp[0, :], axis=0)
-        N2t = np.sum(testnp[1, :], axis=0)
-        Nt1 = np.sum(testnp[:, 0], axis=0)
-        Nt2 = np.sum(testnp[:, 1], axis=0)
-        print("minval : "+str(i))
-        a=ncr(N1t,i)
-        print(a)
-        b=ncr(N2t,Nt1-i)
-        print(b)
-        c=ncr(n,Nt1)
-        print(c)
-        candidate_val=a*b/c
-        print(candidate_val)
-        if candidate_val<=N11_val:
-            print(str(candidate_val)+" will be added : ")
-            sum= sum+candidate_val
-        else:
-            print(str(candidate_val) + " will not be added : ")
     
-    print("\n"+"p-value : "+ str(round(sum,5)))
-    """
     for i in range(min_val,max_val+1):
+        print(i)
         N1t = np.sum(testnp[0, :], axis=0)
         N2t = np.sum(testnp[1, :], axis=0)
         Nt1 = np.sum(testnp[:, 0], axis=0)
         Nt2 = np.sum(testnp[:, 1], axis=0)
         #print("minval : "+str(i))
         a=ncr(N1t,i)
-        #print(a)
+        print(a)
         b=ncr(N2t,Nt1-i)
-        #print(b)
+        print(b)
         c=ncr(n,Nt1)
-        #print(c)
+        print(c)
         candidate_val=a*b//c
-        #print(candidate_val)
+        print(candidate_val)
 
         if i<=testnp[0,0]:
             less=less+candidate_val
@@ -181,8 +162,8 @@ def greater_less(testarr):
             #print(str(candidate_val) + " will not be added : ")
     print("greater : "+str(round(greater,4)))
     print("less : "+str(round(less,4)))
-
-    return N11_val,greater,less
+"""
+    return gpvalue+lpvalue-1.0,gpvalue,lpvalue,pvalue
 
 def Cal_D_value(testarr,alpha):
     testnp = np.array(testarr)
@@ -285,7 +266,7 @@ def Cal_x_value(testarr):
 
     F,err= quad( f, sum, np.inf )
     print("p_value : "+str(F))
-    return round(F,4)
+    return round(ksquare,4),round(F,4)
 
 def Cal_g_value(testarr):
     testnp=np.array(testarr)
