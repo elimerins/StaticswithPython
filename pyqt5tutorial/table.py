@@ -8,7 +8,7 @@ from PyQt5.QtCore import *
 class specify_RowAndColumn(QWidget):
     def __init__(self):
         super().__init__()
-        self.title = 'Making table'
+        self.title = 'Make table'
         self.left = 400
         self.top = 300
         self.width =300
@@ -21,7 +21,7 @@ class specify_RowAndColumn(QWidget):
         self.table_row.setPlaceholderText('rowCount')
         self.table_column = QLineEdit()
         self.table_column.setPlaceholderText('columnCount')
-        self.sendbtn = QPushButton("Send",self)
+        self.sendbtn = QPushButton("Run",self)
         self.layout.addWidget(self.table_row)
         self.layout.addWidget(self.table_column)
         self.layout.addWidget(self.sendbtn)
@@ -32,7 +32,7 @@ class specify_RowAndColumn(QWidget):
 class App(QWidget):
     def __init__(self,r,c):
         super().__init__()
-        self.title = 'Statistics Test'
+        self.title = 'Crosstab Analysis'
         self.left = 100
         self.top = 100
         self.width = 0
@@ -79,7 +79,7 @@ class App(QWidget):
         self.layout2.addWidget(self.lineEdit)
         self.lineEdit.hide()
 
-        self.textLabel3 = QLabel("3. Alternative(default=equal)", self)
+        self.textLabel3 = QLabel("3. Alternative", self)
         self.layout2.addWidget(self.textLabel3)
 
         self.gl_combo = QComboBox()
@@ -102,7 +102,7 @@ class App(QWidget):
         self.layout2.addWidget(self.cp_combo)
 
         self.layout4=QHBoxLayout()
-        self.showResiduals= QCheckBox("Show Residuals")
+        self.showResiduals= QCheckBox("Check Residuals")
         self.showResiduals.stateChanged.connect(lambda: self.btnstate(self.showResiduals))
         self.layout4.addWidget(self.showResiduals)
 
@@ -114,13 +114,9 @@ class App(QWidget):
         self.groupBox.setLayout(self.layout2)
         self.layout3.addWidget(self.groupBox)
 
-        self.button = QPushButton('show result', self)
+        self.button = QPushButton('Run', self)
         self.button.clicked.connect(self.show_value_button)
         self.layout3.addWidget(self.button)
-
-        self.button2= QPushButton('make array',self)
-        self.button2.clicked.connect(self.make_on_click)
-        self.layout3.addWidget(self.button2)
 
         self.p_layout = QHBoxLayout()
         self.p_layout.addLayout(self.layout)
@@ -226,7 +222,8 @@ class App(QWidget):
 
     @pyqtSlot()
     def show_value_button(self):
-
+        if self.showResiduals.isChecked()==True:
+            self.showResiduals.toggle()
         allRows = self.tableWidget.rowCount()
         allColumns = self.tableWidget.columnCount()
         matrix = [[0 for col in range(allColumns)] for row in range(allRows)]
@@ -250,16 +247,17 @@ class App(QWidget):
             alpha=float(self.combo.currentText())
         if (self.vcombo.currentIndex()==1):
 
-            if np.min(np_matrix)==0.0:
+            if np.min(np_matrix)==0:
                 for i in range(allRows):
                     for j in range(allColumns):
-                        matrix[i][j]+=0.5
+                        matrix[i][j]=float(matrix[i][j])
             ksquare,p_value = test.Cal_x_value(matrix)
 
             Message="Test type : "+self.vcombo.currentText()+"\n"+\
-                    "X^2 : "+ksquare+"\n"+\
+                    "X^2 : "+str(ksquare)+"\n"+\
                     "p-value : "+str(p_value)+"\n"+\
                     "alpha : " +str(alpha)+"\n"
+            print(Message)
             if (p_value < alpha):
                 Message +="X and Y are not independent"
             elif (p_value > alpha):
@@ -301,51 +299,49 @@ class App(QWidget):
                     "Subjects in the first row are "+str(RR)+" times higher to have success than those in the second row."
         elif (self.cp_combo.currentIndex()==3):
             OR,logminus,logplus,minus,plus=test.Cal_OR_value(matrix,alpha)
-            print(round(OR,4))
-            Message = "Odds ratio(OR) : " +str(round(OR,4)) +"\n" + \
-                      "100 *(1-" + str(alpha) + ")% confidence interval for log OR :\n" \
-                    "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
-                    "100 *(1-"+str(alpha)+")% confidence interval for OR :"+"\n"\
-                    "("+str(round(minus,4))+","+str(round(plus,4))+")"+"\n" +\
-                    "The odds for success is "+str(round(OR, 4))+" times higher in the first row than the second row."
+            if isinstance(OR,str)==True:
+                Message=OR
+            else:
+                print(round(OR,4))
+                Message = "Odds ratio(OR) : " +str(round(OR,4)) +"\n" + \
+                          "100 *(1-" + str(alpha) + ")% confidence interval for log OR :\n" \
+                        "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
+                        "100 *(1-"+str(alpha)+")% confidence interval for OR :"+"\n"\
+                        "("+str(round(minus,4))+","+str(round(plus,4))+")"+"\n" +\
+                        "The odds for success is "+str(round(OR, 4))+" times higher in the first row than the second row."
+
         elif (self.vcombo.currentIndex() == 3):
             greater,less,p_value = test.greater_less(matrix)
 
             if (self.gl_combo.currentIndex()==0):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "p_value-two sided : " + str(round(p_value,4))+"\n" \
+                    "alternative : true odds ratio is not equal to 1.\n"\
+                    "p_value : " + str(round(p_value,4))+"\n" \
                     "alpha : " + str(alpha) + "\n"
                 if p_value < alpha:
-                    Message += "X and Y are not independent"
+                    Message += "Reject the null hypothesis. \nTrue odds ratio is not equal to 1."
                 elif p_value > alpha:
-                    Message += "X and Y are independent"
+                    Message += "Do not reject the null hypothesis. \nX and Y are independent"
             elif (self.gl_combo.currentIndex()==1):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "p_value-greater : " + str(round(greater, 4)) + "\n" \
+                    "alternative : true odds ratio is greater than 1.\n"\
+                    "p_value : " + str(round(greater, 4)) + "\n" \
                     "alpha : " + str(alpha) + "\n"
                 if greater < alpha:
-                    Message += "True odds ratio is greater than 1."
+                    Message += "Reject the null hypothesis. \nTrue odds ratio is greater than 1."
                 elif greater > alpha or less > alpha or p_value > alpha:
-                    Message += "X and Y are independent"
+                    Message += "Do not reject the null hypothesis. \nX and Y are independent"
             elif (self.gl_combo.currentIndex()==2):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "p_value-less : " + str(round(less, 4)) + "\n" \
+                    "alternative : true odds ratio is less than 1.\n"\
+                    "p_value : " + str(round(less, 4)) + "\n" \
                     "alpha : " + str(alpha) + "\n"
                 if less < alpha:
-                    Message += "True odds ratio is less than 1."
+                    Message += "Reject the null hypothesis. \nTrue odds ratio is less than 1."
                 elif less > alpha:
-                    Message += "X and Y are independent"
-
+                    Message += "Do not reject the null hypothesis. \nX and Y are independent"
 
         elif(self.vcombo.currentIndex()==4):
-            Message="check your table"
-            Rmatrix=test.Residuals(matrix)
-            for i in range(self.tableWidget.rowCount()):
-                for j in range(self.tableWidget.columnCount()):
-                    self.tableWidget.setItem(i, j, QTableWidgetItem(str(matrix[i][j])+"\n("+str(Rmatrix[i][j])+")"))
-                    #self.tableWidget.setRowHeight(self,)
-            self.tableWidget.resizeRowsToContents()
-        elif(self.vcombo.currentIndex()==5):
             sqrtM, rho,alpha= test.cmh_test(matrix, alpha)
             if alpha>sqrtM:
                 print(alpha,sqrtM)
@@ -369,10 +365,6 @@ class App(QWidget):
 
         QMessageBox.about(self,"Title", Message)
 
-    @pyqtSlot()
-    def make_on_click(self):
-        return True
-
 class Controller:
     def __init__(self):
         pass
@@ -380,10 +372,13 @@ class Controller:
         self.ui=specify_RowAndColumn()
         self.ui.sendbtn.clicked.connect(self.Show_SecondWindow)
     def Show_SecondWindow(self):
-        row=self.ui.table_row.text()
-        column=self.ui.table_column.text()
-        self.ui2=App(row,column)
-
+        try:
+            row=int(self.ui.table_row.text())
+            column=int(self.ui.table_column.text())
+            self.ui2 = App(row, column)
+        except ValueError:
+            Message="row, column data must be Integer."
+            QMessageBox.about(self.ui,"Title", Message)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

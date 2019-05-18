@@ -191,6 +191,9 @@ def Cal_D_value(testarr,alpha):
 
 def Cal_OR_value(testarr,alpha):
     testnp = np.array(testarr)
+    if np.min(testnp)<=0:
+        Message="minimum value in matrix is less than 0\n all of matrix value are higher than 0"
+        return Message,0,0,0,0
     n = np.sum(testnp[:, :])
     print(n)  # sum of all elements in matrix
     OR=testnp[0,0]*testnp[1,1]/testnp[1,0]*testnp[0,1]
@@ -235,7 +238,7 @@ def Cal_RR_value(testarr,alpha):
     return RR,log_minus,log_plus,minus,plus
 
 def Cal_x_value(testarr):
-    testnp=np.array(testarr)
+    testnp=np.array(testarr,dtype=float)
     r=(np.size(testnp,1)-1)*(np.size(testnp,0)-1)
 
     n=np.sum(testnp[:,:])
