@@ -17,8 +17,8 @@
       <file leaf-file-name="table.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pyqt5tutorial/table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="326" column="66" lean-forward="false" selection-start-line="326" selection-start-column="66" selection-end-line="326" selection-end-column="66" />
+            <state relative-caret-position="289">
+              <caret line="341" column="42" lean-forward="true" selection-start-line="341" selection-start-column="42" selection-end-line="341" selection-end-column="42" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -29,8 +29,8 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyqt5tutorial/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="165" column="31" lean-forward="false" selection-start-line="165" selection-start-column="31" selection-end-line="165" selection-end-column="31" />
+            <state relative-caret-position="310">
+              <caret line="165" column="30" lean-forward="false" selection-start-line="165" selection-start-column="30" selection-end-line="165" selection-end-column="30" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -446,8 +446,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyqt5tutorial/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="165" column="31" lean-forward="false" selection-start-line="165" selection-start-column="31" selection-end-line="165" selection-end-column="31" />
+        <state relative-caret-position="310">
+          <caret line="165" column="30" lean-forward="false" selection-start-line="165" selection-start-column="30" selection-end-line="165" selection-end-column="30" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -456,8 +456,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyqt5tutorial/table.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="326" column="66" lean-forward="false" selection-start-line="326" selection-start-column="66" selection-end-line="326" selection-end-column="66" />
+        <state relative-caret-position="289">
+          <caret line="341" column="42" lean-forward="true" selection-start-line="341" selection-start-column="42" selection-end-line="341" selection-end-column="42" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>

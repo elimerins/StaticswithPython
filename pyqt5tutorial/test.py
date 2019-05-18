@@ -163,7 +163,7 @@ def greater_less(testarr):
     print("greater : "+str(round(greater,4)))
     print("less : "+str(round(less,4)))
 """
-    return gpvalue+lpvalue-1.0,gpvalue,lpvalue,pvalue
+    return gpvalue,lpvalue,pvalue
 
 def Cal_D_value(testarr,alpha):
     testnp = np.array(testarr)

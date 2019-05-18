@@ -313,7 +313,7 @@ class App(QWidget):
 
             if (self.gl_combo.currentIndex()==0):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "P(n11)-two sided : " + str(round(p_value,4))+"\n" \
+                    "p_value-two sided : " + str(round(p_value,4))+"\n" \
                     "alpha : " + str(alpha) + "\n"
                 if p_value < alpha:
                     Message += "X and Y are not independent"
@@ -321,7 +321,7 @@ class App(QWidget):
                     Message += "X and Y are independent"
             elif (self.gl_combo.currentIndex()==1):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "P(n11)-greater : " + str(round(greater, 4)) + "\n" \
+                    "p_value-greater : " + str(round(greater, 4)) + "\n" \
                     "alpha : " + str(alpha) + "\n"
                 if greater < alpha:
                     Message += "True odds ratio is greater than 1."
@@ -329,7 +329,7 @@ class App(QWidget):
                     Message += "X and Y are independent"
             elif (self.gl_combo.currentIndex()==2):
                 Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                    "P(n11)-less : " + str(round(less, 4)) + "\n" \
+                    "p_value-less : " + str(round(less, 4)) + "\n" \
                     "alpha : " + str(alpha) + "\n"
                 if less < alpha:
                     Message += "True odds ratio is less than 1."
