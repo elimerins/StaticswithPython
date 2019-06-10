@@ -14,7 +14,7 @@ def ncr(n, r):
         denom*=i
         numer*=n+1-i
     return Decimal(numer/denom)
-
+#Combination 계산 함수
 print(stats.norm.ppf(1-0.1/2))
 print(stats.norm.ppf(1-0.05/2))
 print(stats.norm.ppf(1-0.01/2))
@@ -77,6 +77,7 @@ def Residuals(testarr):
     allRows=len(testarr)
     matrix = [[0 for col in range(allColumns)] for row in range(allRows)]
     pm_matrix = [[0 for col in range(allColumns)] for row in range(allRows)]
+    #+,-기호를 저장할 matrix
 
     for i in range(len(testarr)):
         for j in range(len(testarr[0])):
@@ -106,63 +107,7 @@ def greater_less(testarr):
     print(odds,lpvalue)
     odds, gpvalue = stats.fisher_exact(testarr, 'greater')
     print(odds, gpvalue)
-    """
-    testnp = np.array(testarr,dtype=np.float64)
-    n = np.sum(testnp[:, :])
-    print(n)  # sum of all elements in matrix
-    min_val=max(0,np.sum(testnp[0, :], axis=0)+np.sum(testnp[:, 0], axis=0)-n)
-    print(min_val)
-    max_val=min(np.sum(testnp[0, :], axis=0),np.sum(testnp[:, 0], axis=0))
-    print(max_val)
 
-    r = (np.size(testnp, 1) - 1) * (np.size(testnp, 0) - 1)
-
-    N1t = np.sum(testnp[0, :], axis=0)
-    N2t = np.sum(testnp[1, :], axis=0)
-    Nt1 = np.sum(testnp[:, 0], axis=0)
-    Nt2 = np.sum(testnp[:, 1], axis=0)
-    a=ncr(N1t,testnp[0, 0])
-    print(a)
-    b=ncr(N2t,Nt1-testnp[0, 0])
-    print(b)
-    c=ncr(n,Nt1)
-    print(c)
-    N11_val=a*b/c
-    print("p(N11) : "+str(N11_val))
-    sum=0
-    alpha=0.05
-    greater=0
-    less=0
-    
-    for i in range(min_val,max_val+1):
-        print(i)
-        N1t = np.sum(testnp[0, :], axis=0)
-        N2t = np.sum(testnp[1, :], axis=0)
-        Nt1 = np.sum(testnp[:, 0], axis=0)
-        Nt2 = np.sum(testnp[:, 1], axis=0)
-        #print("minval : "+str(i))
-        a=ncr(N1t,i)
-        print(a)
-        b=ncr(N2t,Nt1-i)
-        print(b)
-        c=ncr(n,Nt1)
-        print(c)
-        candidate_val=a*b//c
-        print(candidate_val)
-
-        if i<=testnp[0,0]:
-            less=less+candidate_val
-        elif i>=testnp[0,0]:
-            greater=greater+candidate_val
-
-        if candidate_val<=N11_val:
-            #print(str(candidate_val)+" will be added : ")
-            sum= sum+candidate_val
-        #else:
-            #print(str(candidate_val) + " will not be added : ")
-    print("greater : "+str(round(greater,4)))
-    print("less : "+str(round(less,4)))
-"""
     return gpvalue,lpvalue,pvalue
 
 def Cal_D_value(testarr,alpha):
