@@ -3,6 +3,8 @@ import test
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from scipy import stats
+
 
 class specify_RowAndColumn(QWidget):#첫번째창
     def __init__(self):
@@ -185,9 +187,9 @@ class App(QWidget):
 
     @pyqtSlot()
     def Q_button_on_click(self):
-        QMessageBox.about(self, "Title", "Note : \n + Represents a strong evidence of lack of fit, \n "
+        QMessageBox.about(self, "Title", "Note : \n'-'Represents a strong evidence of lack of fit, \n "
                                          "i.e. subjects in the ith row are more likely to be in the jth column\n"
-                                         " - also represents a strong evidence of lack of fit, \n"
+                                         "'-' also represents a strong evidence of lack of fit, \n"
                                          "i.e. subjects in the ith row are less likely to be in the jth column")
 
         #qbutton을 클릭할 때 messagebox
@@ -264,27 +266,33 @@ class App(QWidget):
         # Message=self.tableWidget.item(0,1).text()
         if self.combo.currentIndex()==3:
             if self.lineEdit.text() is not "":
-                alpha=float(self.lineEdit.text())
+                try:
+                    alpha=float(self.lineEdit.text())
+                except Exception as inst:
+                    Message='Please enter the correct number (decimal).'
+                    QMessageBox.about(self, "Error", Message)
+
                 #alpha를 직접 입력으로 선택한경우 값을 입력할 수 있음 float형으로 변환되어 들어감
             else:
                 alpha =0.05
                 #직접입력으로 넣었지만 값을 넣지 않은경우 자동으로 0.05
         else:
             alpha=float(self.combo.currentText())
-            #직접 입력이 아닌경우 현 combo의 선택된 값이 alpha가 됨
-
+            #직접 입력이 아닌경우if self.vcombo.currentIndex()!=0:
         if self.vcombo.currentIndex()!=0:
-            if self.cp_combo.currentIndex()!=0:
+            if self.cp_combo.currentIndex() != 0:
                 Message="choice Only one : \n Test type or Comparing Proportions"
-                #test type과 comparing proportion 둘중하나만 선택할 수 있음
+            #test type과 comparing proportion 둘중하나만 선택할 수 있음
             else:
                 if (self.vcombo.currentIndex() == 1):
-                #피어슨 테스트인경우
+                    #피어슨 테스트인경우
                     if np.min(np_matrix) == 0:
                         for i in range(allRows):
                             for j in range(allColumns):
                                 matrix[i][j] = float(matrix[i][j])
                     ksquare, p_value = test.Cal_x_value(matrix)
+
+                    print(ksquare,p_value)
                     #X^2 값과 p_value를 계산함
 
                     Message = "Test type : " + self.vcombo.currentText() + "\n" + \
@@ -327,9 +335,9 @@ class App(QWidget):
                     if (self.gl_combo.currentIndex() == 0):
                         #glcombox가 equal인 경우
                         Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                                "alternative : true odds ratio is not equal to 1.\n" \
-                                "p_value : " + str(round(p_value, 4)) + "\n" \
-                                "alpha : " + str(alpha) + "\n"
+                                                                               "alternative : true odds ratio is not equal to 1.\n" \
+                                                                               "p_value : " + str(round(p_value, 4)) + "\n" \
+                                                                                                                       "alpha : " + str(alpha) + "\n"
                         if p_value < alpha:
                             Message += "Reject the null hypothesis. \nTrue odds ratio is not equal to 1."
                         elif p_value > alpha:
@@ -338,9 +346,9 @@ class App(QWidget):
                         #glcombox가 greater인 경우
 
                         Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                                "alternative : true odds ratio is greater than 1.\n" \
-                                "p_value : " + str(round(greater, 4)) + "\n" \
-                                "alpha : " + str(alpha) + "\n"
+                                                                               "alternative : true odds ratio is greater than 1.\n" \
+                                                                               "p_value : " + str(round(greater, 4)) + "\n" \
+                                                                                                                       "alpha : " + str(alpha) + "\n"
                         if greater < alpha:
                             Message += "Reject the null hypothesis. \nTrue odds ratio is greater than 1."
                         elif greater > alpha or less > alpha or p_value > alpha:
@@ -349,38 +357,40 @@ class App(QWidget):
                         #glcombox가 less인 경우
 
                         Message = "Test type : " + self.vcombo.currentText() + "\n" \
-                               "alternative : true odds ratio is less than 1.\n" \
-                                "p_value : " + str(round(less, 4)) + "\n" \
-                                "alpha : " + str(alpha) + "\n"
+                                                                               "alternative : true odds ratio is less than 1.\n" \
+                                                                               "p_value : " + str(round(less, 4)) + "\n" \
+                                                                                                                    "alpha : " + str(alpha) + "\n"
                         if less < alpha:
                             Message += "Reject the null hypothesis. \nTrue odds ratio is less than 1."
                         elif less > alpha:
                             Message += "Do not reject the null hypothesis. \nX and Y are independent"
 
                 elif (self.vcombo.currentIndex() == 4):
-                    sqrtM, rho, alpha = test.cmh_test(matrix, alpha)
+                    sqrtM, rho, Zalpha = test.cmh_test(matrix, alpha)
                     #cmh test에서 계산될 수 있는 값
                     if alpha > sqrtM:
                         #알파가 큰경우
-                        print(alpha, sqrtM)
+                        print(Zalpha, sqrtM)
                         print(">")
                         Message = "CMH statistic M : " + str(round(sqrtM ** 2, 4)) + "\n" \
-                                    "(sqrt M : " + str(round(sqrtM, 4)) + ")\n" \
-                                    "(sample correlation : " + str(round(rho, 4)) + ")\n" \
-                                    "alpha : " + self.combo.currentText() + "\n" + \
+                        "(sqrt M : " + str(round(sqrtM, 4)) + ")\n" \
+                        "(sample correlation : " + str(round(rho, 4)) + ")\n" \
+                                                                                                                                                                           "alpha : " + self.combo.currentText() + "\n" + \
                                   "X and Y are not correlated.\n"
                     elif alpha < sqrtM:
                         #알파가 작은 경우
-                        print(alpha, sqrtM)
+                        print(Zalpha, sqrtM)
                         print("<")
                         Message = "CMH statistic M : " + str(round(sqrtM ** 2, 4)) + "\n" + \
                                   "(sqrt M : " + str(sqrtM) + ")\n" \
-                                    "(rho.hat " + str(round(rho, 4)) + ")\n" \
-                                    "alpha : " + self.combo.currentText() + "\n"
+                                  "(rho.hat " + str(round(rho, 4)) + ")\n" \
+                                  "alpha : " + str(alpha) + "\n"
                         if rho < 0:
                             Message += "X and Y have a negative association"
                         elif rho > 0:
                             Message += "X and Y have a positive association"
+                else:
+                    Message = 'Please use other Test type. Sorry.'
 
         elif self.cp_combo.currentIndex() != 0:
             if self.vcombo.currentIndex() != 0:
@@ -392,18 +402,18 @@ class App(QWidget):
                     pi1, pi2, plus, minus, text = test.Cal_D_value(matrix, alpha)
                     Message = "2-sample test for equality of proportions" + "\n" + \
                               "D : " + str(round(pi1, 4)) + "-" + str(round(pi2, 4)) + "=" + str(round(pi1 - pi2, 4)) + "\n" \
-                                "100 *(1-" + str(alpha) + ")% confidence interval for D :" + "\n" \
-                                "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
+                            "100 *(1-" + str(alpha) + ")% confidence interval for D :" + "\n" \
+                            "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
                               text
                 elif (self.cp_combo.currentIndex() == 2):
                     #RR 측정
                     RR, logminus, logplus, minus, plus = test.Cal_RR_value(matrix, alpha)
                     Message = "Relative risk(RR) : " + str(round(RR, 4)) + "\n" + \
                               "100 *(1-" + str(alpha) + ")% confidence interval for log RR :\n" \
-                                "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
+                                                        "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
                               "100 *(1-" + str(alpha) + ")% confidence interval for RR :" + "\n" \
-                                "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
-                              "Subjects in the first row are " + str(RR) + " times higher to have success than those in the second row."
+                                                                                            "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
+                              "Subjects in the first row are " + str(round(RR,4)) + " times higher to have success than those in the second row."
                 elif (self.cp_combo.currentIndex() == 3):
                     #OR 측정
                     OR, logminus, logplus, minus, plus = test.Cal_OR_value(matrix, alpha)
@@ -413,13 +423,17 @@ class App(QWidget):
                         print(round(OR, 4))
                         Message = "Odds ratio(OR) : " + str(round(OR, 4)) + "\n" + \
                                   "100 *(1-" + str(alpha) + ")% confidence interval for log OR :\n" \
-                                    "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
+                                                            "(" + str(round(logminus, 4)) + "," + str(round(logplus, 4)) + ")" + "\n" + \
                                   "100 *(1-" + str(alpha) + ")% confidence interval for OR :" + "\n" \
-                                    "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
+                                                                                                "(" + str(round(minus, 4)) + "," + str(round(plus, 4)) + ")" + "\n" + \
                                   "The odds for success is " + str(round(OR, 4)) + " times higher in the first row than the second row."
+                else:
+                    Message='Please use other Test type. Sorry.'
+        else:
+            Message = 'Please use other Test type. Sorry.'
+        QMessageBox.about(self,"Title", Message) #현 combo의 선택된 값이 alpha가 됨
 
 
-        QMessageBox.about(self,"Title", Message)
 
 class Controller:
     def __init__(self):
